@@ -1,0 +1,2 @@
+## Problem Description
+Write a program that generates all two-word anagrams of the string “documenting”. Here’s a word list you might want to use: https://gist.githubusercontent.com/calvinmetcalf/084ab003b295ee70c8fc/raw/314abfdc74b50f45f3dbbfa169892eff08f940f2/wordlist.txt.
