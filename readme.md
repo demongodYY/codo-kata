@@ -7,3 +7,6 @@ npm install
 npm run test
 npm run test-w
 ```
+
+## branch(kata) list
+- Anagram
