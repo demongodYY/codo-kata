@@ -9,4 +9,4 @@ npm run test-w
 ```
 
 ## branch(kata) list
-- Anagram
+- [Anagram](https://github.com/demongodYY/codo-kata/tree/Anagram)
