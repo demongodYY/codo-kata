@@ -2,7 +2,8 @@ import chai from 'chai';
 chai.should();
 
 import {
-  readFile
+  readFile,
+  compareWords
 } from '../src/index.js'
 
 describe('Canary test', () => {
@@ -17,10 +18,10 @@ describe('find Anagrams', () => {
     readFile('static/words.txt').length.should.be.equal(24);
   })
 
-  // it('compare two words is anagram', () => {
-  //   compareWords('fresher', 'refresh').should.eq(true);
-  //   compareWords('bird', 'dog').should.eq(false);
-  // })
+  it('compare two words is anagram', () => {
+    compareWords('fresher', 'refresh').should.eq(true);
+    compareWords('bird', 'dog').should.eq(false);
+  })
 
 
 })
