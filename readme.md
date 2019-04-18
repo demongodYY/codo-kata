@@ -6,4 +6,5 @@ http://codekata.com/kata/kata06-anagrams/
 npm install
 npm run test
 npm run test-w
+npm run build
 ```

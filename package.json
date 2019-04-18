@@ -5,11 +5,13 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha test/**/*.spec.js --require babel-register --require babel-polyfill --reporter dot --exit",
-    "test-w": "mocha test/**/*.spec.js --require babel-register --require babel-polyfill --reporter dot -w"
+    "test-w": "mocha test/**/*.spec.js --require babel-register --require babel-polyfill --reporter dot -w",
+    "build": "babel src -d build"
   },
   "author": "demongodYY",
   "license": "ISC",
   "devDependencies": {
+    "babel-cli": "^6.26.0",
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "babel-register": "^6.26.0",

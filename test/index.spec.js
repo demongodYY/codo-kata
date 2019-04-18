@@ -4,7 +4,9 @@ chai.should();
 import {
   readFile,
   compareWords,
-  pushAnagram
+  classifyAnagram,
+  classifyWords,
+  filterAnagrams
 } from '../src/index.js'
 
 describe('Canary test', () => {
@@ -16,7 +18,7 @@ describe('Canary test', () => {
 describe('find Anagrams', () => {
   it('read file and genrate array', () => {
     readFile('static/words.txt').should.be.an('array');
-    readFile('static/words.txt').length.should.be.equal(24);
+    readFile('static/words.txt').length.should.be.equal(338882);
   })
 
   it('compare two words is anagram', () => {
@@ -24,11 +26,34 @@ describe('find Anagrams', () => {
     compareWords('bird', 'dog').should.eq(false);
   })
 
-  it('push anagram to same array', () => {
-    const testArray = ['fresher'];
-    pushAnagram(testArray, 'refresh', compareWords).should.have.members(['fresher', 'refresh']);
-    pushAnagram(testArray, 'dog', compareWords).should.not.have.members(['dog']);
+  it('push anagram to inner array or generate new inner array', () => {
+    const testArray = [
+      ['fresher']
+    ]
+    classifyAnagram(testArray, 'refresh')[0].should.have.members(['fresher', 'refresh']);
+    classifyAnagram(testArray, 'refresh').length.should.equal(1);
+    classifyAnagram(testArray, 'dog').length.should.equal(2);
   })
 
+  it('classify all words', () => {
+    const testArray = [
+      'mano',
+      'dog',
+      'cat',
+      'act',
+      'manoaos',
+      'fresher', 
+      'refresh'
+    ]
+    classifyWords(testArray).length.should.equal(5);
+  })
+
+  it('filter anagrams', () => {
+    const testArray = [
+      [ 'fresher', 'refresh'],
+      ['dog']
+    ]
+    filterAnagrams(testArray).length.should.equal(1);
+  })
 
 })

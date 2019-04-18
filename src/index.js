@@ -8,12 +8,33 @@ function compareWords(words1, words2) {
   return words1.split('').sort().join('') === words2.split('').sort().join('');
 }
 
-function pushAnagram(array, word, compareFn) {
-  return compareFn(array[0], word)? array.concat(word): array;
+function classifyAnagram(array, word) {
+  for (let inner of array) {
+    if (compareWords(inner[0], word)) {
+      inner.push(word)
+      return array;
+    }
+  }
+  array.push([word]);
+  return array;
+}
+
+function classifyWords(array) {
+  const resultArray = [];
+  array.forEach((word) => {
+    classifyAnagram(resultArray, word);
+  })
+  return resultArray;
+}
+
+function filterAnagrams(array) {
+  return array.filter(item => item.length> 1);
 }
 
 export {
   readFile,
   compareWords,
-  pushAnagram
+  classifyAnagram,
+  classifyWords,
+  filterAnagrams
 }
