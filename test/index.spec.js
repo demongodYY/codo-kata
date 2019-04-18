@@ -6,7 +6,9 @@ import {
   compareWords,
   classifyAnagram,
   classifyWords,
-  filterAnagrams
+  filterAnagrams,
+  findMaxNumAnagram,
+  findLongestAnagram
 } from '../src/index.js'
 
 describe('Canary test', () => {
@@ -54,6 +56,16 @@ describe('find Anagrams', () => {
       ['dog']
     ]
     filterAnagrams(testArray).length.should.equal(1);
+  })
+
+  it('find maximum anagram', () => {
+    const result = filterAnagrams(classifyWords(readFile('static/testWords.txt')));
+    findMaxNumAnagram(result).should.have.members([ 'paste', 'pates', 'peats', 'septa', 'spate', 'tapes', 'tepas' ]);
+  })
+
+  it('find longest words anagram', () => {
+    const result = filterAnagrams(classifyWords(readFile('static/testWords.txt')));
+    findLongestAnagram(result).should.have.members([ 'punctilio', 'unpolitic' ]);
   })
 
 })

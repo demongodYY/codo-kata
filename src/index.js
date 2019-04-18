@@ -28,7 +28,15 @@ function classifyWords(array) {
 }
 
 function filterAnagrams(array) {
-  return array.filter(item => item.length> 1);
+  return array.filter(item => item.length > 1);
+}
+
+function findMaxNumAnagram(array) {
+  return array.reduce((acc, curr) => curr.length > acc.length ? curr : acc);
+}
+
+function findLongestAnagram(array) {
+  return array.reduce((acc, curr) => curr[0].length > acc[0].length ? curr : acc);
 }
 
 export {
@@ -36,5 +44,7 @@ export {
   compareWords,
   classifyAnagram,
   classifyWords,
-  filterAnagrams
+  filterAnagrams,
+  findMaxNumAnagram,
+  findLongestAnagram
 }
