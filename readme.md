@@ -7,5 +7,5 @@ npm install
 npm run test
 npm run test-w
 npm run build
-
+node ./index.js
 ```
