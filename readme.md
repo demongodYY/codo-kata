@@ -9,4 +9,5 @@ npm run test-w
 ```
 
 ## branch(kata) list
-- [Anagram](https://github.com/demongodYY/codo-kata/tree/Anagram)
+- [Two anagram for string](https://github.com/demongodYY/codo-kata/tree/Anagram)
+- [Anagrams](https://github.com/demongodYY/codo-kata/tree/Anagrams2)
