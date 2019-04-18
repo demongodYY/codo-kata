@@ -3,7 +3,8 @@ chai.should();
 
 import {
   readFile,
-  compareWords
+  compareWords,
+  pushAnagram
 } from '../src/index.js'
 
 describe('Canary test', () => {
@@ -21,6 +22,12 @@ describe('find Anagrams', () => {
   it('compare two words is anagram', () => {
     compareWords('fresher', 'refresh').should.eq(true);
     compareWords('bird', 'dog').should.eq(false);
+  })
+
+  it('push anagram to same array', () => {
+    const testArray = ['fresher'];
+    pushAnagram(testArray, 'refresh', compareWords).should.have.members(['fresher', 'refresh']);
+    pushAnagram(testArray, 'dog', compareWords).should.not.have.members(['dog']);
   })
 
 
