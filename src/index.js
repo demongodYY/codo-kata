@@ -1,9 +1,9 @@
 function fizz(num, resultStream) {
-  return num % 3 === 0 ? resultStream + 'Fizz' : resultStream;
+  return num % 3 === 0 || num.toString().indexOf('3') > -1 ? resultStream + 'Fizz' : resultStream;
 }
 
 function buzz(num, resultStream) {
-  return num % 5 === 0 ? resultStream + 'Buzz': resultStream;
+  return num % 5 === 0 || num.toString().indexOf('5') > -1 ? resultStream + 'Buzz' : resultStream;
 }
 
 function trNum(num, resultStream) {
@@ -11,10 +11,10 @@ function trNum(num, resultStream) {
 }
 
 function fizzBuzz(num) {
-  return  trNum(num, buzz(num,fizz(num, '')));
+  return trNum(num, buzz(num, fizz(num, '')));
 }
 
-export  {
+export {
   fizz,
   buzz,
   trNum,

@@ -18,9 +18,17 @@ describe('test fizz buzz', () => {
     fizz(6, '').should.be.equal('Fizz');
   });
 
+  it('test fizz function', () => {
+    fizz(13, '').should.be.equal('Fizz');
+  });
+
   it('test buzz function', () => {
     buzz(5, '').should.be.equal('Buzz');
     buzz(10, '').should.be.equal('Buzz');
+  });
+
+  it('test buzz function', () => {
+    buzz(52, '').should.be.equal('Buzz');    
   });
 
   it('test translate function', () => {
@@ -33,6 +41,7 @@ describe('test fizz buzz', () => {
     fizzBuzz(3).should.be.equal('Fizz');
     fizzBuzz(5).should.be.equal('Buzz');
     fizzBuzz(15).should.be.equal('FizzBuzz');
+    fizzBuzz(51).should.be.equal('FizzBuzz');
   })
 
 })
