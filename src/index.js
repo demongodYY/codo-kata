@@ -1,22 +1,18 @@
-function fizz(num, resultStream) {
-  return num % 3 === 0 ? resultStream + 'Fizz' : resultStream;
+function fizz(num) {
+  return num % 3 === 0 || num.toString().indexOf('3') > -1 ? 'fizz' : '';
 }
 
-function buzz(num, resultStream) {
-  return num % 5 === 0 ? resultStream + 'Buzz': resultStream;
-}
-
-function trNum(num, resultStream) {
-  return resultStream.length > 0 ? resultStream : num.toString();
+function buzz(num) {
+  return num % 5 === 0 || num.toString().indexOf('5') > -1 ? 'buzz' : '';
 }
 
 function fizzBuzz(num) {
-  return  trNum(num, buzz(num,fizz(num, '')));
+  const strResult = [fizz, buzz].reduce((acc, curr) => acc += curr(num), '');
+  return strResult.length > 0 ? strResult : num.toString();
 }
 
-export  {
+export {
   fizz,
   buzz,
-  trNum,
   fizzBuzz
 }
