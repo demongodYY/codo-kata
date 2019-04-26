@@ -2,46 +2,28 @@ import chai from 'chai';
 chai.should();
 
 import {
-  fizz,
-  buzz,
-  trNum,
   fizzBuzz
 } from '../src/index'
 
-describe('test test', () => {
-  true.should.be.equal(true);
-})
+describe('test', () => {
+  it('test test', () => {
+    true.should.be.equal(true);
+  })
 
-describe('test fizz buzz', () => {
-  it('test fizz function', () => {
-    fizz(3, '').should.be.equal('Fizz');
-    fizz(6, '').should.be.equal('Fizz');
-  });
-
-  it('test fizz function', () => {
-    fizz(13, '').should.be.equal('Fizz');
-  });
-
-  it('test buzz function', () => {
-    buzz(5, '').should.be.equal('Buzz');
-    buzz(10, '').should.be.equal('Buzz');
-  });
-
-  it('test buzz function', () => {
-    buzz(52, '').should.be.equal('Buzz');    
-  });
-
-  it('test translate function', () => {
-    trNum(4, '').should.be.equal('4');
-    trNum(5, 'Buzz').should.be.equal('Buzz');
-  });
-
-  it('test combine function', () => {
-    fizzBuzz(2).should.be.equal('2');
-    fizzBuzz(3).should.be.equal('Fizz');
-    fizzBuzz(5).should.be.equal('Buzz');
-    fizzBuzz(15).should.be.equal('FizzBuzz');
-    fizzBuzz(51).should.be.equal('FizzBuzz');
+  it('test fizzbuzz', () => {
+    const testData = [
+      {num: 2, result:'2'},
+      {num: 3, result:'fizz'},
+      {num: 13, result:'fizz'},
+      {num: 5, result:'buzz'},
+      {num: 52, result:'buzz'},
+      {num: 15, result:'fizzbuzz'},
+      {num: 51, result:'fizzbuzz'},
+      {num: 53, result:'fizzbuzz'}
+    ]
+    testData.forEach((testItem) => {
+      fizzBuzz(testItem.num).should.be.equal(testItem.result);
+    })
   })
 
 })
