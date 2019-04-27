@@ -12,4 +12,4 @@ npm run test-w
 - [Two anagram for string](https://github.com/demongodYY/codo-kata/tree/Anagram)
 - [Anagrams](https://github.com/demongodYY/codo-kata/tree/Anagrams2)
 - [FizzBuzz](https://github.com/demongodYY/codo-kata/tree/fizzbuzz)
-- [args](https://github.com/demongodYY/codo-kata/tree/args)
+- [Args](https://github.com/demongodYY/codo-kata/tree/args)
