@@ -8,6 +8,5 @@ npm run test
 npm run test-w
 ```
 
-## branch(kata) list
-- [Two anagram for string](https://github.com/demongodYY/codo-kata/tree/Anagram)
-- [Anagrams](https://github.com/demongodYY/codo-kata/tree/Anagrams2)
+## 题目
+http://codingdojo.org/kata/FizzBuzz/
