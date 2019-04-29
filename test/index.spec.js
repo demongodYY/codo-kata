@@ -1,7 +1,14 @@
 import chai from 'chai';
 chai.should();
 
-import { argsParse } from '../src/index'
+import {
+  argsParse,
+  parseStrArg,
+  parseBoolArg,
+  parseNumArg,
+  checkErrorArg,
+  parseStrArgs
+} from '../src/index'
 
 describe('Canary test', () => {
   it('should be ok', () => {
@@ -10,39 +17,45 @@ describe('Canary test', () => {
 });
 
 describe('test args parse', () => {
-  it('empty args should be return default args', () => {
-    argsParse('')['f'].should.be.equal(false);
-    argsParse('')['p'].should.be.equal(0);
-    argsParse('')['d'].should.be.equal('');
+  it('parse str arg', () => {
+    parseStrArg('-d /dev/src')['d'].should.be.equal('/dev/src');
   });
 
-  it('test num arg input', () => {
-    argsParse('-p 8080')['p'].should.be.equal(8080);
-    argsParse('')['f'].should.be.equal(false);
-    argsParse('')['d'].should.be.equal('');
+  it('parse bool arg', () => {
+    parseBoolArg('-f')['f'].should.be.equal(true);
   });
 
-  it('test error num input', () =>{
-    (() => argsParse('-p xxx')) .should.be.throw();
+  it('parse num arg', () => {
+    parseNumArg('-p 8080')['p'].should.be.equal(8080);
   });
 
-  it('test bool input arg', () => {
-    argsParse('-f')['f'].should.be.equal(true);
+  it('input error num', () => {
+    (() => parseNumArg('-p xxx')).should.be.throw();
   });
 
-  it('test string input arg', () => {
-    argsParse('-d /dev/src')['d'].should.be.equal('/dev/src');
+  it('check error arg', () => {
+    const defaultArgs = {
+      'f': false,
+      'p': 0,
+      'd': ''
+    };
+    (() => checkErrorArg(defaultArgs, '-x 666')).should.be.throw();
   });
 
-  it('test error input arg', () => {
-    (() => argsParse('-x 666')).should.throw();
+  it('parse string args', () => {
+    parseStrArgs('-f -d /dev/src -p 8080').should.have.members(['-f ', '-d /dev/src', '-p 8080']);
   });
 
-  it('parse more args', () => {
-    const parsedArgs = argsParse('-f -p 8080 -d /dev/src');
-    parsedArgs['f'].should.be.equal(true);
-    parsedArgs['p'].should.be.equal(8080);
-    parsedArgs['d'].should.be.equal('/dev/src');
+  it('parse all args', () => {
+    const args = argsParse('-f -d /dev/src -p 8080');
+    args['f'].should.be.equal(true);
+    args['d'].should.be.equal('/dev/src');
+    args['p'].should.be.equal(8080);    
+  });
+  it('default args', () => {
+    const args = argsParse('');
+    args['f'].should.be.equal(false);
+    args['d'].should.be.equal('');
+    args['p'].should.be.equal(0);
   })
-
 })
