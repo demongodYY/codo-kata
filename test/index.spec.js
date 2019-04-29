@@ -10,39 +10,39 @@ describe('Canary test', () => {
 });
 
 describe('test args parse', () => {
-  it('test input empty args', () => {
-    const defaultArgs = {
-      'f': false,
-      'p': 0,
-      'd': ''
-    }
-    JSON.stringify(argsParse('')).should.be.equal(JSON.stringify(defaultArgs));
+  it('empty args should be return default args', () => {
+    argsParse('')['f'].should.be.equal(false);
+    argsParse('')['p'].should.be.equal(0);
+    argsParse('')['d'].should.be.equal('');
   });
 
-  it('test input f args', () => {
+  it('test num arg input', () => {
+    argsParse('-p 8080')['p'].should.be.equal(8080);
+    argsParse('')['f'].should.be.equal(false);
+    argsParse('')['d'].should.be.equal('');
+  });
+
+  it('test error num input', () =>{
+    (() => argsParse('-p xxx')) .should.be.throw();
+  });
+
+  it('test bool input arg', () => {
     argsParse('-f')['f'].should.be.equal(true);
   });
 
-  it('test input p args', () => {
-    argsParse('-p 8080')['p'].should.be.equal(8080);
+  it('test string input arg', () => {
+    argsParse('-d /dev/src')['d'].should.be.equal('/dev/src');
   });
 
-  it('test input p error type', () => {
-    (() => argsParse('-p ffff')).should.throw();
+  it('test error input arg', () => {
+    (() => argsParse('-x 666')).should.throw();
   });
 
-  it('test input d args', () => {
-    argsParse('-d /dev/arg')['d'].should.be.eq('/dev/arg');
-  });
+  it('parse more args', () => {
+    const parsedArgs = argsParse('-f -p 8080 -d /dev/src');
+    parsedArgs['f'].should.be.equal(true);
+    parsedArgs['p'].should.be.equal(8080);
+    parsedArgs['d'].should.be.equal('/dev/src');
+  })
 
-  it('test input error arg', () => {
-    (() => argsParse('-x 999')).should.throw();
-  });
-
-  it('test input more args', () => {
-    const parsedArgs = argsParse('-f -p 8080 -d /dev/arg');
-    parsedArgs['f'].should.be.eq(true);
-    parsedArgs['p'].should.be.eq(8080);
-    parsedArgs['d'].should.be.eq('/dev/arg');
-  });
 })

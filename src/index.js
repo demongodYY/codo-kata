@@ -6,56 +6,64 @@ function argsParse(strArgs) {
     'd': ''
   }
 
+  function checkNumArg(value) {
+    if (isNaN(value)) {
+      throw new Error('-p arg should input number!');
+    }
+    return true;
+  }
+
+  function checkType(flag, type) {
+    return typeof defaultArgs[flag] === type;
+  }
+
   function parseSingleArg(strArg) {
     return {
-      'flag': strArg.substring(1, 2),
-      'value': strArg.substring(3)
+      flag: strArg.substring(1, 2),
+      value: strArg.substring(3)
     }
   }
 
-  function changeArg(strArg) {
-    const flag = parseSingleArg(strArg).flag;
-    const value = parseSingleArg(strArg).value;
-    if (defaultArgs[flag] === undefined) {
-      throw new Error('please input correct args!');
+  function getNumArg(parsedArg) {
+    const result = {};
+    const value = Number(parsedArg.value);
+    if (checkType(parsedArg.flag, 'number') && checkNumArg(value)) {
+      result[parsedArg.flag] = value;
     }
-    switch (typeof defaultArgs[flag]) {
-      case 'boolean':
-        return changeBoolArg(flag);
-      case 'number':
-        return changeNumArg(flag, value);
-      case 'string':
-        return changeStrArg(flag, value);
+    return result;
+  }
+
+  function getBoolArg(parsedArg) {
+    const result = {};
+    if (checkType(parsedArg.flag, 'boolean')) {
+      result[parsedArg.flag] = true;
     }
+    return result;
   }
 
-  function changeBoolArg(flag) {
-    return defaultArgs[flag] = true;
-  }
-
-  function changeNumArg(flag, value) {
-    const numFlag = Number(value);
-    if (isNaN(numFlag)) {
-      throw new Error('please input number type for -p arg');
+  function getStrArg(parsedArg) {
+    const result = {};
+    if (checkType(parsedArg.flag, 'string')) {
+      result[parsedArg.flag] = parsedArg.value;
     }
-    return defaultArgs[flag] = numFlag;
+    return result;
   }
 
-  function changeStrArg(flag, value) {
-    return defaultArgs[flag] = value
-  }
-
-  function changeArgs(strArgs) {
-    const pattern = /-[a-zA-Z][ \w\/\\]*/g;
-    const arrArgs = strArgs.match(pattern);
-    if (arrArgs) {
-      arrArgs.forEach(strArg => { changeArg(strArg) });
+  function findErrArg(parsedArg) {
+    if (defaultArgs[parsedArg.flag] === undefined) {
+      throw new Error('please input correctly args!');
     }
+    return {};
   }
 
-  changeArgs(strArgs);
+  const pattern = /-\w[ \w\/]*/g;
+  return strArgs === '' ? defaultArgs : strArgs.match(pattern).reduce((acc, curr) => {
+    const parsedArg = parseSingleArg(curr);
+    return Object.assign(acc, getStrArg(parsedArg), getBoolArg(parsedArg), getNumArg(parsedArg), findErrArg(parsedArg));
+  }, Object.assign({}, defaultArgs));
 
-  return defaultArgs;
 }
 
-export { argsParse }
+export {
+  argsParse
+}
