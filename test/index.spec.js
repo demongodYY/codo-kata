@@ -2,12 +2,7 @@ import chai from 'chai';
 chai.should();
 
 import {
-  argsParse,
-  parseStrArg,
-  parseBoolArg,
-  parseNumArg,
-  checkErrorArg,
-  parseStrArgs
+  ArgParser
 } from '../src/index'
 
 describe('Canary test', () => {
@@ -17,45 +12,63 @@ describe('Canary test', () => {
 });
 
 describe('test args parse', () => {
-  it('parse str arg', () => {
-    parseStrArg('-d /dev/src')['d'].should.be.equal('/dev/src');
+  const argParser = new ArgParser([
+    { flag: 'd', type: 'string', default: '' },
+    { flag: 'p', type: 'number', default: 0 },
+    { flag: 'f', type: 'boolean', default: false },
+    { flag: 'm', type: 'numberArray', default: [] },
+    { flag: 'n', type: 'strArray', default: [] }
+  ]);
+
+  it('test create schema object', () => {
+    argParser.schema.should.be.an('array');
+    argParser.schema.length.should.be.eq(5);
+  });
+  
+  it('test default arg', () => {
+    const parsedArg = argParser.parseArgs([]);
+    parsedArg['d'].should.be.eq('');
+    parsedArg['p'].should.be.eq(0);
+    parsedArg['f'].should.be.eq(false);
   });
 
-  it('parse bool arg', () => {
-    parseBoolArg('-f')['f'].should.be.equal(true);
+  it('test num arg',() => {
+    argParser.parseArgs([['p', '8080']])['p'].should.be.eq(8080);
+    argParser.parseArgs([['p', '-8080']])['p'].should.be.eq(-8080);
   });
 
-  it('parse num arg', () => {
-    parseNumArg('-p 8080')['p'].should.be.equal(8080);
+  it('test string arg', () => {
+    argParser.parseArgs([['d', '/dev/bin']])['d'].should.be.eq('/dev/bin');
   });
 
-  it('input error num', () => {
-    (() => parseNumArg('-p xxx')).should.be.throw();
+  it('test boolean arg', () => {
+    argParser.parseArgs([['f']])['f'].should.be.eq(true);
   });
 
-  it('check error arg', () => {
-    const defaultArgs = {
-      'f': false,
-      'p': 0,
-      'd': ''
-    };
-    (() => checkErrorArg(defaultArgs, '-x 666')).should.be.throw();
+  it('test error num arg input', () => {
+    (() => {argParser.parseArgs([['p', 'abc']])}).should.be.throw();
   });
 
-  it('parse string args', () => {
-    parseStrArgs('-f -d /dev/src -p 8080').should.have.members(['-f ', '-d /dev/src', '-p 8080']);
+  it('test input error arg', () => {
+    (() => {argParser.parseArgs([['x', 'abc']])}).should.be.throw();
   });
 
-  it('parse all args', () => {
-    const args = argsParse('-f -d /dev/src -p 8080');
-    args['f'].should.be.equal(true);
-    args['d'].should.be.equal('/dev/src');
-    args['p'].should.be.equal(8080);    
+  it('test input multi args', () => {
+    const parsedArg = argParser.parseArgs([['d', '/dev/bin'], ['f'], ['p','8080']]);
+    parsedArg['d'].should.be.eq('/dev/bin');
+    parsedArg['p'].should.be.eq(8080);
+    parsedArg['f'].should.be.eq(true);
   });
-  it('default args', () => {
-    const args = argsParse('');
-    args['f'].should.be.equal(false);
-    args['d'].should.be.equal('');
-    args['p'].should.be.equal(0);
-  })
-})
+
+  it('test numArray arg', ()=> {
+    argParser.parseArgs([['m', '1,2,3']])['m'].should.have.members([1,2,3]);
+  });
+
+  it('test strArray arg', () => {
+    argParser.parseArgs([['n', 'a,b,c']])['n'].should.have.members(['a','b','c']);
+  });
+
+  it('test input error num in numArray', () => {
+    (() => {argParser.parseArgs([['m', '1,d,3']])}).should.be.throw();
+  });
+});

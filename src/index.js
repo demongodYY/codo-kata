@@ -1,70 +1,72 @@
-function argsParse(strArgs) {
-  const defaultArgs = {
-    'f': false,
-    'p': 0,
-    'd': ''
+class ArgParser {
+  constructor(schema) {
+    this.schema = schema;
+    this.parseMethods = {
+      'number': this.parseNumArg,
+      'string': this.parseStrArg,
+      'boolean': this.parseBoolArg,
+      'numberArray': this.parseNumArrayArg,
+      'strArray': this.parseStrArray
+    }
   }
-  return parseStrArgs(strArgs).reduce((acc, curr) => Object.assign({}, acc, parseArg(defaultArgs, curr)), defaultArgs);
-}
 
-function parseArg(defaultArg, input) {
-  defaultArg = checkErrorArg(defaultArg, input);
-  switch (typeof defaultArg[parseArgFormat(input)[0]]) {
-    case 'number':
-      return parseNumArg(input);
-    case 'boolean':
-      return parseBoolArg(input);
-    case 'string':
-      return parseStrArg(input);
+  getdefaultArg() {
+    const result = {};
+    this.schema.forEach((item) => {
+      result[item.flag] = item.default;
+    });
+    return result;
   }
-}
 
-function parseStrArgs(input) {
-  const pattarn = /-\w *[\w\/]*/g;
-  return input.match(pattarn) || [];
-}
-
-function parseArgFormat(input) {
-  return [input.substring(1, 2), input.substring(3)];
-}
-
-function formatReturnArg(flag, value) {
-  const result = {};
-  result[flag] = value;
-  return result;
-}
-
-function parseStrArg(input) {
-  return formatReturnArg(parseArgFormat(input)[0], parseArgFormat(input)[1]);
-}
-
-function parseBoolArg(input) {
-  return formatReturnArg(parseArgFormat(input)[0], true);
-}
-
-function getNumber(value) {
-  if (isNaN(Number(value))) {
-    throw new Error('should be input correct num for -p');
+  transPortNum(strNum) {
+    if (isNaN(parseInt(strNum))) throw new Error('should input correct num');
+    return parseInt(strNum);
   }
-  return Number(value);
-}
 
-function parseNumArg(input) {
-  return formatReturnArg(parseArgFormat(input)[0], getNumber(parseArgFormat(input)[1]));
-}
-
-function checkErrorArg(defaultArg, input) {
-  if (defaultArg[parseArgFormat(input)[0]] === undefined) {
-    throw new Error(`There is no ${parseArgFormat(input)[0]} arg!`);
+  parseStrArray(flag, value) {
+    const result = {};
+    result[flag] = value.split(',');
+    return result;
   }
-  return defaultArg;
+
+  parseNumArrayArg(flag, value) {
+    const result = {};
+    result[flag] = value.split(',').map(num => this.transPortNum(num));
+    return result;
+  }
+
+  parseNumArg(flag, value) {
+    const result = {};
+    result[flag] = this.transPortNum(value);
+    return result;
+  }
+
+  parseStrArg(flag, value) {
+    const result = {};
+    result[flag] = value;
+    return result;
+  }
+
+  parseBoolArg(flag) {
+    const result = {};
+    result[flag] = true;
+    return result;
+  }
+
+  parseArg(arg) {
+    const type = this.schema.find((item) => item.flag === arg[0]).type;
+    return this.parseMethods[type].bind(this)(arg[0], arg[1]);
+  }
+
+  parseArgs(args) {
+    const result = Object.assign({}, this.getdefaultArg());
+    args.forEach((arg) => {
+      Object.assign(result, this.parseArg(arg));
+    })
+    return result;
+  }
 }
 
 export {
-  argsParse,
-  parseStrArg,
-  parseBoolArg,
-  parseNumArg,
-  parseStrArgs,
-  checkErrorArg
+  ArgParser
 }
