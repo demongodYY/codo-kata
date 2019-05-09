@@ -2,7 +2,10 @@ import chai from 'chai';
 chai.should();
 
 import {
-  ArgParser
+  ArgParser,
+  ArgsParser,
+  ArgSchema,
+  ArgSchemas
 } from '../src/index'
 
 describe('Canary test', () => {
@@ -11,64 +14,68 @@ describe('Canary test', () => {
   });
 });
 
-describe('test args parse', () => {
-  const argParser = new ArgParser([
-    { flag: 'd', type: 'string', default: '' },
-    { flag: 'p', type: 'number', default: 0 },
-    { flag: 'f', type: 'boolean', default: false },
-    { flag: 'm', type: 'numberArray', default: [] },
-    { flag: 'n', type: 'strArray', default: [] }
-  ]);
-
-  it('test create schema object', () => {
-    argParser.schema.should.be.an('array');
-    argParser.schema.length.should.be.eq(5);
-  });
-  
-  it('test default arg', () => {
-    const parsedArg = argParser.parseArgs([]);
-    parsedArg['d'].should.be.eq('');
-    parsedArg['p'].should.be.eq(0);
-    parsedArg['f'].should.be.eq(false);
+describe('test for create schemas', () => {
+  it('create schema', () => {
+    const argSchema = new ArgSchema('f', 'boolean', false);
+    argSchema.flag.should.be.eq('f');
+    argSchema.type.should.be.eq('boolean');
+    argSchema.defaultValue.should.be.eq(false);
   });
 
-  it('test num arg',() => {
-    argParser.parseArgs([['p', '8080']])['p'].should.be.eq(8080);
-    argParser.parseArgs([['p', '-8080']])['p'].should.be.eq(-8080);
-  });
-
-  it('test string arg', () => {
-    argParser.parseArgs([['d', '/dev/bin']])['d'].should.be.eq('/dev/bin');
-  });
-
-  it('test boolean arg', () => {
-    argParser.parseArgs([['f']])['f'].should.be.eq(true);
-  });
-
-  it('test error num arg input', () => {
-    (() => {argParser.parseArgs([['p', 'abc']])}).should.be.throw();
-  });
-
-  it('test input error arg', () => {
-    (() => {argParser.parseArgs([['x', 'abc']])}).should.be.throw();
-  });
-
-  it('test input multi args', () => {
-    const parsedArg = argParser.parseArgs([['d', '/dev/bin'], ['f'], ['p','8080']]);
-    parsedArg['d'].should.be.eq('/dev/bin');
-    parsedArg['p'].should.be.eq(8080);
-    parsedArg['f'].should.be.eq(true);
-  });
-
-  it('test numArray arg', ()=> {
-    argParser.parseArgs([['m', '1,2,3']])['m'].should.have.members([1,2,3]);
-  });
-
-  it('test strArray arg', () => {
-    argParser.parseArgs([['n', 'a,b,c']])['n'].should.have.members(['a','b','c']);
-  });
-
-  it('test input error num in numArray', () => {
-    (() => {argParser.parseArgs([['m', '1,d,3']])}).should.be.throw();
+  it('create schemas', () => {
+    const argF = new ArgSchema('f', 'boolean', false);
+    const argP = new ArgSchema('p', 'number', 0);
+    const argSchemas = new ArgSchemas(argF, argP);
+    argSchemas.length.should.be.eq(2);
   });
 });
+
+describe('test for single arg paser', () => {
+  it('test boolean arg', () => {
+    const argParser = new ArgParser('boolean');
+    argParser.parseArg('f').f.should.be.eq(true);
+  });
+
+  it('test num arg', () => {
+    const argParser = new ArgParser('number');
+    argParser.parseArg('p', '8080').p.should.be.eq(8080);
+  })
+
+  it('test str arg', () => {
+    const argParser = new ArgParser('string');
+    argParser.parseArg('d', '/dev/bin').d.should.be.eq('/dev/bin');
+  })
+
+  it('test wrong num arg', () => {
+    const argParser = new ArgParser('number');
+    (() => argParser.parseArg('p', 'xxxx')).should.be.throw();
+  });
+});
+
+describe('test for multi arg', () => {
+  let argsParser
+  beforeEach(() => {
+    const argF = new ArgSchema('f', 'boolean', false);
+    const argP = new ArgSchema('p', 'number', 0);
+    const argD = new ArgSchema('d', 'string', '');
+    const argSchemas = new ArgSchemas(argF, argP, argD);
+    argsParser = new ArgsParser(argSchemas);
+  })
+
+  it('test empty arg', () => {
+    argsParser.parse([]).f.should.be.equal(false);
+    argsParser.parse([]).p.should.be.equal(0);
+    argsParser.parse([]).d.should.be.equal('');
+  });
+
+  it('test multi args', () => {
+    const parsedArg = argsParser.parse([['p', '8080'], ['f'], ['d', '/dev/bin']]);
+    parsedArg.p.should.be.eq(8080);
+    parsedArg.f.should.be.eq(true);
+    parsedArg.d.should.be.eq('/dev/bin');
+  });
+
+  it('test wrong arg', () => {
+    (() => argsParser.parse([['f'], ['x', '666']])).should.be.throw();
+  });
+})
