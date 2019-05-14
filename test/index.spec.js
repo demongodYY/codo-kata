@@ -33,22 +33,22 @@ describe('test for create schemas', () => {
 describe('test for single arg paser', () => {
   it('test boolean arg', () => {
     const argParser = new ArgParser('boolean');
-    argParser.parseArg('f').f.should.be.eq(true);
+    argParser.parse('f').f.should.be.eq(true);
   });
 
   it('test num arg', () => {
     const argParser = new ArgParser('number');
-    argParser.parseArg('p', '8080').p.should.be.eq(8080);
+    argParser.parse('p', '8080').p.should.be.eq(8080);
   })
 
   it('test str arg', () => {
     const argParser = new ArgParser('string');
-    argParser.parseArg('d', '/dev/bin').d.should.be.eq('/dev/bin');
+    argParser.parse('d', '/dev/bin').d.should.be.eq('/dev/bin');
   })
 
   it('test wrong num arg', () => {
     const argParser = new ArgParser('number');
-    (() => argParser.parseArg('p', 'xxxx')).should.be.throw();
+    (() => argParser.parse('p', 'xxxx')).should.be.throw();
   });
 });
 

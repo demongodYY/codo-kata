@@ -1,11 +1,11 @@
-import ParsedArg from './ArgParser'
+import ArgParser from './ArgParser'
 
 export default class ArgsParser {
   constructor(schemas) {
     this.schemas = schemas;
   }
 
-  getDefaultArgs(schema) {
+  getDefaultArgs() {
     return this.schemas.reduce((acc, schema) => {
       acc[schema.flag] = schema.defaultValue;
       return acc;
@@ -14,8 +14,8 @@ export default class ArgsParser {
 
   parseArg(flag, value) {
     const type = this.schemas.find(schema => schema.flag === flag).type;
-    const parsedArg = new ParsedArg(type);
-    return parsedArg.parseArg(flag, value)
+    const argParser = new ArgParser(type);
+    return argParser.parse(flag, value);
   }
 
   parse(args) {
