@@ -1,12 +1,7 @@
 import chai from 'chai';
 chai.should();
 
-import {
-  ArgParser,
-  ArgsParser,
-  ArgSchema,
-  ArgSchemas
-} from '../src/index'
+import Args from '../src/Args'
 
 describe('Canary test', () => {
   it('should be ok', () => {
@@ -14,68 +9,65 @@ describe('Canary test', () => {
   });
 });
 
-describe('test for create schemas', () => {
-  it('create schema', () => {
-    const argSchema = new ArgSchema('f', 'boolean', false);
-    argSchema.flag.should.be.eq('f');
-    argSchema.type.should.be.eq('boolean');
-    argSchema.defaultValue.should.be.eq(false);
-  });
-
-  it('create schemas', () => {
-    const argF = new ArgSchema('f', 'boolean', false);
-    const argP = new ArgSchema('p', 'number', 0);
-    const argSchemas = new ArgSchemas(argF, argP);
-    argSchemas.length.should.be.eq(2);
-  });
-});
-
-describe('test for single arg paser', () => {
-  it('test boolean arg', () => {
-    const argParser = new ArgParser('boolean');
-    argParser.parse('f').f.should.be.eq(true);
-  });
-
-  it('test num arg', () => {
-    const argParser = new ArgParser('number');
-    argParser.parse('p', '8080').p.should.be.eq(8080);
-  })
-
-  it('test str arg', () => {
-    const argParser = new ArgParser('string');
-    argParser.parse('d', '/dev/bin').d.should.be.eq('/dev/bin');
-  })
-
-  it('test wrong num arg', () => {
-    const argParser = new ArgParser('number');
-    (() => argParser.parse('p', 'xxxx')).should.be.throw();
-  });
-});
-
-describe('test for multi arg', () => {
-  let argsParser
+describe('Args test', () => {
+  let args;
+  let testSchema;
   beforeEach(() => {
-    const argF = new ArgSchema('f', 'boolean', false);
-    const argP = new ArgSchema('p', 'number', 0);
-    const argD = new ArgSchema('d', 'string', '');
-    const argSchemas = new ArgSchemas(argF, argP, argD);
-    argsParser = new ArgsParser(argSchemas);
-  })
-
-  it('test empty arg', () => {
-    argsParser.parse([]).f.should.be.equal(false);
-    argsParser.parse([]).p.should.be.equal(0);
-    argsParser.parse([]).d.should.be.equal('');
+    testSchema = [
+      {flag: 'p', type: 'number',  default: 0},
+      {flag: 'd', type: 'string',  default: ''},
+      {flag: 'f', type: 'boolean',  default: false},
+      {flag: 'l', type: 'numArray',  default: []},
+      {flag: 'm', type: 'strArray',  default: []}
+    ]
+     args = new Args(testSchema);
   });
 
-  it('test multi args', () => {
-    const parsedArg = argsParser.parse([['p', '8080'], ['f'], ['d', '/dev/bin']]);
-    parsedArg.p.should.be.eq(8080);
-    parsedArg.f.should.be.eq(true);
+  it('test create Args with schema', () => {    
+    args.schema.length.should.be.eq(testSchema.length)
+  });
+
+  it('test parse string arg', () => {
+    const parsedArg = args.parseArg(['d', '/dev/bin']);
     parsedArg.d.should.be.eq('/dev/bin');
   });
 
-  it('test wrong arg', () => {
-    (() => argsParser.parse([['f'], ['x', '666']])).should.be.throw();
+  it('test parse bool Arg', () => {
+    const parsedArg = args.parseArg(['f']);
+    parsedArg.f.should.be.eq(true);
+  });
+
+  it('test parse number arg', () => {
+    const parsedArg = args.parseArg(['p', '8080']);
+    parsedArg.p.should.be.eq(8080);
+  });
+
+  it('test wrong number arg', () => {
+    (() => args.parseArg(['p', 'xxx'])).should.throw();
+  });
+
+  it('test string array arg', () => {
+    const parsedArg = args.parseArg(['m', ['abc','cba','nba']]);
+    parsedArg.m.should.have.members(['abc','cba','nba']);
+  });
+
+  it('test string array arg', () => {
+    const parsedArg = args.parseArg(['l', [1,2,3]]);
+    parsedArg.l.should.have.members([1,2,3]);
+  });
+
+  it('test wrong input with num array', () => {
+    (() => args.parseArg(['l', ['xxx',2,3]])).should.be.throw();
+  });
+
+  it('test wrong input' ,() => {
+    (() => args.parseArg(['x', 666])).should.be.throw();
+  })
+
+  it('test multi args', () => {
+    const parsedArgs = args.parse([['d', '/dev/bin'], ['f'], ['p', '8080']]);
+    parsedArgs.d.should.be.eq('/dev/bin');
+    parsedArgs.f.should.be.eq(true);
+    parsedArgs.p.should.be.eq(8080);
   });
 })
