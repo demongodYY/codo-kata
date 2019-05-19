@@ -1,0 +1,5 @@
+- 判断两个词是否为 anagram
+- 获取原数组中第一个 word 
+- 原数组中寻找 anagram
+- 将 anagram 的词归到一个数组
+- 过滤原数组中的 anagram 

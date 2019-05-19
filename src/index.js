@@ -1,50 +1,34 @@
-import fs from 'fs'
+export default class Anagrams {
 
-function readFile(fileName) {
-  return fs.readFileSync(fileName).toString().split('\r\n');
-}
-
-function compareWords(words1, words2) {
-  return words1.split('').sort().join('') === words2.split('').sort().join('');
-}
-
-function classifyAnagram(array, word) {
-  for (let inner of array) {
-    if (compareWords(inner[0], word)) {
-      inner.push(word)
-      return array;
-    }
+  constructor(wordsList) {
+    this.originWordsList = wordsList;
   }
-  array.push([word]);
-  return array;
+
+  isAnagram(word1,word2) {
+    return word1.split('').sort().join('') === word2.split('').sort().join('')
+  }
+
+  getFirstWord() {
+    return this.originWordsList[0];
+  }
+
+  getAnagramArray(compareWord) {
+   return this.originWordsList.filter(word => this.isAnagram(word, compareWord));
+  }
+
+  filterWordsList(anagramArray) {
+    this.originWordsList = this.originWordsList.filter(word => anagramArray.indexOf(word) === -1);
+  }
+
+  getAnagrams() {
+    const reusult = [];
+    while(this.originWordsList.length > 0) {
+      const anagramArray = this.getAnagramArray(this.getFirstWord());
+      reusult.push(anagramArray);
+      this.filterWordsList(anagramArray);
+    }
+    return reusult.filter(wordArray => wordArray.length > 1);
+  }
+
 }
 
-function classifyWords(array) {
-  const resultArray = [];
-  array.forEach((word) => {
-    classifyAnagram(resultArray, word);
-  })
-  return resultArray;
-}
-
-function filterAnagrams(array) {
-  return array.filter(item => item.length > 1);
-}
-
-function findMaxNumAnagram(array) {
-  return array.reduce((acc, curr) => curr.length > acc.length ? curr : acc);
-}
-
-function findLongestAnagram(array) {
-  return array.reduce((acc, curr) => curr[0].length > acc[0].length ? curr : acc);
-}
-
-export {
-  readFile,
-  compareWords,
-  classifyAnagram,
-  classifyWords,
-  filterAnagrams,
-  findMaxNumAnagram,
-  findLongestAnagram
-}

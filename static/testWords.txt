@@ -1,3 +1,4 @@
+act
 refortify
 refortifying
 refought
@@ -158,7 +159,6 @@ overgrew
 overground
 overgrow
 overgrowing
-act
 cat
 crepitus
 cuprites
