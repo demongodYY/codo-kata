@@ -1,34 +1,24 @@
 export default class Anagrams {
-
   constructor(wordsList) {
     this.originWordsList = wordsList;
   }
 
-  isAnagram(word1,word2) {
-    return word1.split('').sort().join('') === word2.split('').sort().join('')
+  getWordFlag(word) {
+    return word.split('').sort().join('');
   }
 
-  getFirstWord() {
-    return this.originWordsList[0];
+  pushWordToClassify(wordClassify, word) {
+    return (wordClassify || []).concat(word);
   }
 
-  getAnagramArray(compareWord) {
-   return this.originWordsList.filter(word => this.isAnagram(word, compareWord));
-  }
-
-  filterWordsList(anagramArray) {
-    this.originWordsList = this.originWordsList.filter(word => anagramArray.indexOf(word) === -1);
+  getClassifyWords() {
+    return this.originWordsList.reduce((acc, curr) => {
+      acc[this.getWordFlag(curr)] = this.pushWordToClassify(acc[this.getWordFlag(curr)], curr)
+      return acc;
+    }, {});
   }
 
   getAnagrams() {
-    const reusult = [];
-    while(this.originWordsList.length > 0) {
-      const anagramArray = this.getAnagramArray(this.getFirstWord());
-      reusult.push(anagramArray);
-      this.filterWordsList(anagramArray);
-    }
-    return reusult.filter(wordArray => wordArray.length > 1);
+    return Object.values(this.getClassifyWords()).filter(arrayWords => arrayWords.length > 1);
   }
-
 }
-

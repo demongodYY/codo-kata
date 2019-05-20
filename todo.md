@@ -1,5 +1,3 @@
-- 判断两个词是否为 anagram
-- 获取原数组中第一个 word 
-- 原数组中寻找 anagram
-- 将 anagram 的词归到一个数组
-- 过滤原数组中的 anagram 
+- 获取单词的 flag （按字母排序后的字符串）
+- 将原 wordslist 数组分类成 以 flag 为 KEY 的对象
+- 生成数组，过滤
