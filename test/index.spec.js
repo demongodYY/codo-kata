@@ -2,9 +2,9 @@ import chai from 'chai';
 chai.should();
 
 import {
-  isPalindromic,
-  findPalindromicWithlength,
-  findLogestPalindromic
+  getReverseStr,
+  findPalindromicSubString,
+  getLogestPalindromic
 } from '../src/index'
 
 describe('Canary test', () => {
@@ -14,21 +14,21 @@ describe('Canary test', () => {
 });
 
 describe('longest palindromic test', () => {
-  it('is palindromic string', () => {
-    isPalindromic('abc').should.be.eq(false);
-    isPalindromic('abba').should.be.eq(true);
+  it('get reverse str', () => {
+    getReverseStr('abc').should.be.eq('cba');
   });
 
-  it('find palindromic with length', () => {
-    findPalindromicWithlength('abbac',5).should.be.eq('');
-    findPalindromicWithlength('abbac',4).should.be.eq('abba');
-    findPalindromicWithlength('cbbd',2).should.be.equal('bb');
-  });
-
-  it('find longest palindromic', () => {
-    findLogestPalindromic('babad').should.be.equal('bab');
-    findLogestPalindromic('cbbd').should.be.equal('bb');
-    findLogestPalindromic('a').should.be.equal('a');
-
+  it('find palindromic substring with width', () => {
+    findPalindromicSubString('abbad','dabba',4).should.be.eq('abba');
+    findPalindromicSubString('abbc','cbba',2).should.be.eq('bb');
+    findPalindromicSubString('abcde','edcba',2).should.be.eq('');
+    findPalindromicSubString('abcde','edcba',1).should.be.eq('a');
   })
+
+  it('get longest palindromic',() => {
+    getLogestPalindromic('abbad').should.be.eq('abba');
+    getLogestPalindromic('abbc').should.be.eq('bb');
+    getLogestPalindromic('abadd').should.be.eq('aba');
+  })
+
 })
